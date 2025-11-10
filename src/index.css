@@ -1,0 +1,39 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+/* Background gradient */
+body {
+  @apply bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-900 dark:to-gray-800;
+}
+
+/* Card modern */
+.card {
+  @apply rounded-3xl p-6 shadow-lg bg-white/80 dark:bg-gray-800/70 backdrop-blur-md border border-white/20 dark:border-gray-700/40 transition-transform duration-200;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+}
+
+/* Title fancy */
+.title-hero {
+  @apply text-4xl font-extrabold text-center;
+  background: linear-gradient(90deg, #3b82f6, #8b5cf6);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Buttons clean */
+.btn {
+  @apply px-4 py-2 rounded-xl font-semibold transition-all duration-150;
+}
+
+.btn-primary {
+  @apply bg-blue-600 hover:bg-blue-700 text-white shadow-sm;
+}
+
+.btn-danger {
+  @apply bg-red-500 hover:bg-red-600 text-white;
+}
