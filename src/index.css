@@ -2,38 +2,56 @@
 @tailwind components;
 @tailwind utilities;
 
-
-/* Background gradient */
-body {
-  @apply bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-900 dark:to-gray-800;
+/*  APP BG (light & dark)  */
+@layer utilities {
+  .app-bg {
+    @apply min-h-screen bg-gradient-to-br from-slate-50 to-slate-200 dark:from-slate-900 dark:to-slate-800;
+  }
 }
 
-/* Card modern */
-.card {
-  @apply rounded-3xl p-6 shadow-lg bg-white/80 dark:bg-gray-800/70 backdrop-blur-md border border-white/20 dark:border-gray-700/40 transition-transform duration-200;
+/*  CARDS  */
+@layer components {
+  .card {
+    @apply rounded-2xl p-5 bg-white/80 dark:bg-slate-800/70 backdrop-blur-md border border-white/40 dark:border-slate-700 shadow-lg;
+  }
+  .card-muted {
+    @apply rounded-2xl p-4 bg-slate-100/80 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700;
+  }
 }
 
-.card:hover {
-  transform: translateY(-2px);
+/*  BUTTONS  */
+@layer components {
+  .btn { @apply px-4 py-2 rounded-xl font-semibold transition-all duration-150 active:scale-[0.98]; }
+  .btn-primary { @apply bg-indigo-600 hover:bg-indigo-700 text-white shadow; }
+  .btn-ghost { @apply bg-slate-200 hover:bg-slate-300 text-slate-900 dark:bg-slate-700 dark:hover:bg-slate-600 dark:text-white; }
+  .btn-success { @apply bg-emerald-600 hover:bg-emerald-700 text-white; }
+  .btn-warning { @apply bg-amber-500 hover:bg-amber-600 text-black; }
+  .btn-danger  { @apply bg-rose-600 hover:bg-rose-700 text-white; }
 }
 
-/* Title fancy */
-.title-hero {
-  @apply text-4xl font-extrabold text-center;
-  background: linear-gradient(90deg, #3b82f6, #8b5cf6);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+/*  TYPO / HEADINGS  */
+@layer utilities {
+  .heading-gradient {
+    background: linear-gradient(90deg, #6366f1, #a78bfa);
+    
+    /* Standard property (pt compatibilitate completa) */
+    background-clip: text;
+
+    /* Webkit (obligatoriu pt Chrome/Safari) */
+    -webkit-background-clip: text;
+
+    /* Face textul transparent */
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+  }
 }
 
-/* Buttons clean */
-.btn {
-  @apply px-4 py-2 rounded-xl font-semibold transition-all duration-150;
+@keyframes pulse-slow {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.65; }
 }
 
-.btn-primary {
-  @apply bg-blue-600 hover:bg-blue-700 text-white shadow-sm;
+.animate-pulse-slow {
+  animation: pulse-slow 3s ease-in-out infinite;
 }
 
-.btn-danger {
-  @apply bg-red-500 hover:bg-red-600 text-white;
-}

@@ -7,56 +7,56 @@ import DailyChart from "./components/DailyChart";
 import TotalStudy from "./components/TotalStudy";
 
 export default function App() {
-  // TASKS
+  
+  // incarcam toate taskurile salvate in localStorage
   const [tasks, setTasks] = useState(() => {
     const saved = localStorage.getItem("tasks");
     return saved ? JSON.parse(saved) : [];
   });
 
+  // taskul pe care il studiezi acum (null daca nu studiezi nimic)
   const [activeTaskId, setActiveTaskId] = useState(null);
-
-
-  // INTERVAL SELECTAT DE USER
+  // intervalul ales pentru notificari
   const [reminderInterval, setReminderInterval] = useState(10 * 1000);
+  const reminderRef = useRef(null); // ref pentru a tine intervalul de remindere
+  const timerRef = useRef(null); // ref catre zona de "studying" ca sa putem face scroll la ea
+  const lastStoppedTaskRef = useRef(null); // tine minte ce task am oprit ca sa ne intoarcem la el
 
-  // INTERVALUL REAL DE REMINDER (ref → NU declanșează re-render)
-  const reminderRef = useRef(null);
-
-  // ✅ NOTIFICĂRI
   const sendNotification = (title, body) => {
     if (Notification.permission === "granted") {
       new Notification(title, { body });
     }
   };
 
+  // salvam timpul studiat pe zile (folosit pentru grafice)
   const [dailyStats, setDailyStats] = useState(() => {
   const saved = localStorage.getItem("dailyStats");
   return saved ? JSON.parse(saved) : {};
   });
 
+  // cand schimbam dailyStats il salvam in localStorage
   useEffect(() => {
   localStorage.setItem("dailyStats", JSON.stringify(dailyStats));
   }, [dailyStats]);
 
-
+ // cerem permisiunea de notificari la prima pornire
   useEffect(() => {
     if (Notification.permission !== "granted") {
       Notification.requestPermission();
     }
   }, []);
 
-  // ✅ Salvări
+ 
   useEffect(() => localStorage.setItem("tasks", JSON.stringify(tasks)), [tasks]);
 
-  // ✅ LA REFRESH → oprim tot
-  // ✅ LA REFRESH → oprim tot
+  
+    // cand dai refresh: inchidem orice studiu ramas si salvam timpul corect
     useEffect(() => {
       setTasks(prev =>
         prev.map(t => {
           if (t.isActive && t.lastStart) {
             const extra = Math.floor((Date.now() - t.lastStart) / 1000);
 
-            // ✅ IMPORTANT: Salvăm și în dailyStats!
             addToDailyStats(extra);
 
             return { ...t, 
@@ -76,28 +76,28 @@ export default function App() {
     }, []);
 
 
-  // ✅ PORNEȘTE REMINDER-UL DUPĂ CE TASK-UL DEVINE ACTIV
+  
   useEffect(() => {
     if (!activeTaskId) return;
 
     const current = tasks.find(t => t.id === activeTaskId);
     if (!current || !current.isActive) return;
 
-    // 🔥 Oprim intervalul vechi
+    
     if (reminderRef.current) clearInterval(reminderRef.current);
 
-    // 🔥 Pornim unul nou
+    
     reminderRef.current = setInterval(() => {
       const check = tasks.find(t => t.id === activeTaskId);
       if (check && check.isActive) {
-        sendNotification("Reminder", "Încă studiezi? Ține-o tot așa! 👊");
+        sendNotification("Reminder", "Inca studiezi? Tine-o tot asa! 👊");
       } else {
         clearInterval(reminderRef.current);
         reminderRef.current = null;
       }
     }, reminderInterval);
 
-    // cleanup dacă schimbăm task-ul
+    
     return () => {
       if (reminderRef.current) {
         clearInterval(reminderRef.current);
@@ -107,9 +107,10 @@ export default function App() {
 
   }, [activeTaskId, tasks, reminderInterval]);
 
-  // ✅ START TASK
+  // porneste un task; opreste pe cel activ daca exista altul
+  // facem scroll automat la timer cand incepem sa studiem
   const startTask = (id) => {
-    // Oprim reminderul vechi
+    
     if (reminderRef.current) clearInterval(reminderRef.current);
 
     setTasks(prev =>
@@ -128,12 +129,18 @@ export default function App() {
 
     setActiveTaskId(id);
 
-    // notificare de start
+        setTimeout(() => {
+      timerRef.current?.scrollIntoView({
+        behavior: "smooth",
+        block: "center"
+      });
+    }, 100);
+
     const started = tasks.find(t => t.id === id);
-    if (started) sendNotification("Start", "Ai început să înveți la " + started.title);
+    if (started) sendNotification("Start", "Ai inceput sa inveti la " + started.title);
   };
 
-  // ✅ PAUZĂ TASK
+  // opreste taskul, calculeaza timpul, salveaza, reseteaza activeTaskId
  const pauseTask = (id) => {
   if (reminderRef.current) clearInterval(reminderRef.current);
 
@@ -148,14 +155,14 @@ export default function App() {
     })
   );
 
-  sendNotification("Pauză", "Ai pus pauză la sesiunea ta de studiu.");
+  sendNotification("Pauza", "Ai pus pauza la sesiunea ta de studiu.");
 
   setActiveTaskId(null);
 };
 
-
+  // adauga secunde in statistica pe ziua curenta
   const addToDailyStats = (seconds) => {
-  const today = new Date().toISOString().slice(0, 10); // "2025-01-18"
+  const today = new Date().toISOString().slice(0, 10); 
 
   setDailyStats(prev => ({
     ...prev,
@@ -163,74 +170,105 @@ export default function App() {
   }));
   };
 
+  // ascultam butonul din Timer; cand cere oprire, retinem ce task am oprit
+    useEffect(() => {
+  const handler = (e) => {
+    const stoppedId = e.detail;  
+    lastStoppedTaskRef.current = stoppedId;
 
+    if (activeTaskId) pauseTask(activeTaskId);
+  };
+
+  window.addEventListener("pauseActiveTask", handler);
+  return () => window.removeEventListener("pauseActiveTask", handler);
+}, [activeTaskId]);
+
+  // cand nu mai e niciun task activ: intoarce scrollul la cardul taskului oprit
+  useEffect(() => {
+    if (activeTaskId === null && lastStoppedTaskRef.current) {
+      const el = document.getElementById(`task-${lastStoppedTaskRef.current}`);
+      if (el) {
+        setTimeout(() => {
+          el.scrollIntoView({ behavior: "smooth", block: "center" });
+        }, 100);
+      }
+      lastStoppedTaskRef.current = null;
+    }
+  }, [activeTaskId]);
 
  return (
-  <div className="min-h-screen flex justify-center py-12 px-4">
-    <div className="w-full max-w-2xl card">
+    <div className="app-bg">
+      <div className="max-w-2xl mx-auto px-4 py-10">
 
-      <h1 className="title-hero mb-8">StudyTrack 📘</h1>
+        {/* Header */}
+        <div className="flex items-center justify-between mb-6">
+          <h1 className="text-4xl font-extrabold heading-gradient">StudyTrack</h1>
+          <ThemeToggle />
+        </div>
 
-      <div className="flex justify-between items-center mb-6">
-        <ThemeToggle />
-      </div>
+        {/* Settings card */}
+        <div className="card mb-5">
+          <label className="block font-semibold text-slate-700 dark:text-slate-200 mb-2">
+            Reminder interval
+          </label>
+          <select
+            value={reminderInterval}
+            onChange={(e) => setReminderInterval(Number(e.target.value))}
+            className="w-full p-3 rounded-xl bg-slate-100 dark:bg-slate-700 text-slate-900 dark:text-white border border-slate-200 dark:border-slate-600"
+          >
+            <option value={5 * 1000}>5 secunde</option>
+            <option value={10 * 1000}>10 secunde</option>
+            <option value={30 * 1000}>30 secunde</option>
+            <option value={60 * 1000}>1 minut</option>
+            <option value={5 * 60 * 1000}>5 minute</option>
+            <option value={15 * 60 * 1000}>15 minute</option>
+          </select>
+        </div>
 
-      <div className="card mb-6">
-        <label className="block font-semibold text-gray-700 dark:text-gray-300 mb-2">
-          Reminder interval:
-        </label>
+        {/* Add + List */}
+        <div className="card mb-5">
+          <AddTask onAdd={(t) => setTasks(prev => [...prev, t])} />
+        </div>
 
-        <select
-          value={reminderInterval}
-          onChange={(e) => setReminderInterval(Number(e.target.value))}
-          className="w-full p-3 rounded-xl bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-white"
-        >
-          <option value={5 * 1000}>5 secunde</option>
-          <option value={10 * 1000}>10 secunde</option>
-          <option value={30 * 1000}>30 secunde</option>
-          <option value={60 * 1000}>1 minut</option>
-          <option value={5 * 60 * 1000}>5 minute</option>
-        </select>
-      </div>
+        <TaskList
+          tasks={tasks}
+          onDelete={id => setTasks(prev => prev.filter(t => t.id !== id))}
+          onStatusChange={(id, status) =>
+            setTasks(prev => prev.map(t => t.id === id ? { ...t, status } : t))
+          }
+          onStart={startTask}
+          onPause={pauseTask}
+        />
 
-      <AddTask onAdd={(t) => setTasks((prev) => [...prev, t])} />
-
-      <TaskList 
-        tasks={tasks}
-        onDelete={id => setTasks(prev => prev.filter(t => t.id !== id))}
-        onStatusChange={(id, status) =>
-          setTasks(prev => prev.map(t => t.id === id ? { ...t, status } : t))
-        }
-        onStart={startTask}
-        onPause={pauseTask}
-      />
-
-      {activeTaskId && (
-        <div className="card mt-4">
+        {/* Active timer / Totals */}
+        <div ref={timerRef}>
+        {activeTaskId ? (
           <Timer task={tasks.find(t => t.id === activeTaskId)} />
-        </div>
-      )}
+        ) : (
+          <TotalStudy 
+            dailyStats={dailyStats}
+            activeTaskId={activeTaskId}
+            tasks={tasks}
+            onPause={pauseTask}
+          />
 
-      {!activeTaskId && (
-        <div className="card mt-4">
-          <TotalStudy dailyStats={dailyStats} />
-        </div>
-      )}
-
-      <div className="card mt-4 text-center">
-        <p className="text-lg font-semibold text-blue-700 dark:text-blue-300">
-          Ai studiat azi:{" "}
-          {Math.floor((dailyStats[new Date().toISOString().slice(0,10)] || 0) / 60)}
-          {" "}minute
-        </p>
+        )}
       </div>
 
-      <div className="card mt-6">
-        <DailyChart dailyStats={dailyStats} />
-      </div>
+        {/* Today */}
+        <div className="card-muted mt-4 text-center">
+          <p className="text-base font-semibold text-indigo-700 dark:text-indigo-300">
+            Ai studiat azi:{" "}
+            {Math.floor((dailyStats[new Date().toISOString().slice(0,10)] || 0) / 60)} minute
+          </p>
+        </div>
 
+        {/* Chart */}
+        <div className="card mt-5">
+          <DailyChart dailyStats={dailyStats} />
+        </div>
+      </div>
     </div>
-  </div>
-);
+  );
 
 }

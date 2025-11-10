@@ -3,37 +3,36 @@ import { useState } from "react";
 export default function AddTask({ onAdd }) {
   const [title, setTitle] = useState("");
 
+  //tinem minte ce scriem in input
   const handleAdd = () => {
-    if (!title.trim()) return;
+    const clean = title.trim();
+    //daca e gol nu adaugam nimic
+    if (!clean) return;
 
+    //task nou
     onAdd({
-      id: crypto.randomUUID(),
-      title,
+      id: crypto.randomUUID(), //id unic random
+      title: clean, //numa task
+      date: new Date().toLocaleString(), //data crearii
       status: "upcoming",
-      date: new Date().toLocaleString(),
       timeSpent: 0,
       isActive: false,
-      lastStart: null,
+      lastStart: null //n a fost pornit deloc
     });
-
+    //golim inputul dupa ce adaugam
     setTitle("");
   };
 
   return (
-    <div className="flex gap-2 mb-4">
+    <div className="flex gap-3">
       <input
-        className="flex-1 border p-3 rounded-xl dark:bg-gray-900 dark:text-white dark:border-gray-700"
-        type="text"
-        placeholder="Adaugă activitate..."
+        className="flex-1 p-3 rounded-xl bg-slate-100 dark:bg-slate-700 text-slate-900 dark:text-white border border-slate-200 dark:border-slate-600"
+        placeholder="Adauga activitate..."
         value={title}
-        onChange={e => setTitle(e.target.value)}
+        onChange={(e) => setTitle(e.target.value)}
+        onKeyDown={(e) => e.key === "Enter" && handleAdd()}
       />
-      <button 
-        onClick={handleAdd}
-        className="bg-blue-600 text-white px-4 py-3 rounded-xl hover:bg-blue-700"
-      >
-        Add
-      </button>
+      <button onClick={handleAdd} className="btn btn-primary">Add</button>
     </div>
   );
 }
