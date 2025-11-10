@@ -96,7 +96,7 @@ This project is open-source.
 Project created for:
 
 Transilvania University of Brașov
-Faculty of Electrical Engineering and Computer Science (FIESC)
+Faculty of Electrical Engineering and Computer Science
 Specialization: Telecommunications Systems & Technologies (TST)
 ```
 
