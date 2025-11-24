@@ -1,90 +1,106 @@
-# 📘 StudyTrack – Smart & Minimal Study Tracker
+# 🚀 StudyTrack
 
-**StudyTrack** is a lightweight and modern React application designed to help you track study sessions, stay focused, and visualize your productivity in a clean and intuitive interface.
-
-> ⚠️ **This project is still under development.** New features are added regularly.
-
----
-
-## 🚀 Features
-
-### ✅ Task Management
-- Add, start, pause, complete, and delete tasks  
-- Real-time timer for the active task  
-- Automatic pause on page refresh  
-- Data persistence using `localStorage`
-
-### ✅ Smart Workflow
-- Auto-scroll to the active study timer  
-- Auto-scroll back to the related task after stopping  
-- Global pause event system  
-- Fast and minimal interaction flow
-
-### ✅ Statistics & Analytics
-- Tracks total study time per day  
-- Beautiful 7-day bar chart using **Recharts**  
-- Total study time counter  
-
-### ✅ Theme Support
-- Light / Dark mode  
-- Theme preference saved automatically  
-
-### ✅ Modern UI
-- Built using **TailwindCSS**  
-- Smooth animations  
-- Responsive layout  
-- Clean & minimalistic interface  
+**StudyTrack** is a modern productivity and study-tracking app built with **React + Firebase**, designed for students, developers, and anyone who wants to track time efficiently.  
+It features task management, stopwatch & pomodoro timer, XP leveling, charts, cloud sync, notifications, and a polished UI.
 
 ---
 
-## 🧪 Tech Stack
-- **React (Vite)** – fast and modern setup  
-- **TailwindCSS** – utility-first styling  
-- **Recharts** – analytics & charts  
-- **localStorage** – data persistence  
-- **Notifications API**
+## ✨ Features
+
+### 📚 Task Management
+- Add tasks with category and optional deadline.
+- Categories: Mathematics, Coding, Science, Languages, Reading, Other.
+- Status filters: **All, Upcoming, Completed, Overdue, Canceled**.
+- Automatic overdue detection.
+
+### ⏱️ Stopwatch & Pomodoro Timer
+- Dual timer system.
+- Customizable Pomodoro intervals (work & break).
+- Smooth real-time updates.
+- Desktop notifications (“Time for a break”, “Back to work”).
+
+### 🧘 Focus Mode
+- Full-screen immersive mode to eliminate distractions.
+
+### 🔥 XP System & Leveling
+- XP = total seconds spent studying.
+- Levels from **Novice 🌱** to **Grandmaster 👑**.
+- Progress bar and dynamic titles.
+
+### 📊 Statistics & Charts
+- **Daily Progress Chart** (last 7 days).
+- **Category Distribution Pie Chart**.
+- **Total Study Time** widget.
+
+### ☁️ Cloud Sync (Firebase Firestore)
+- Real-time sync for tasks, XP, and stats.
+- Automatic fallback to localStorage.
+- Password hashing migration (plain → SHA-256).
+
+### 🔐 Secure Login
+- User accounts protected with SHA-256 hashed passwords.
+- Handles legacy accounts + auto-migrates them.
+
+### 🎨 Modern UI + Dark Mode
+- TailwindCSS + glass-morphism interfaces.
+- Persistent theme stored in localStorage.
 
 ---
 
-## 📦 Installation & Setup
+## 🧩 Tech Stack
 
-### ✅ 1. Clone the repository
+- React 18  
+- Firebase Firestore  
+- TailwindCSS  
+- Recharts  
+- Vite  
+- Web Notifications API  
+- LocalStorage sync layer  
+
+---
 ```bash
-git clone https://github.com/Aurasj/studytrack.git
+## 📂 Project Structure
+src/
+├── App.jsx
+├── main.jsx
+├── index.css
+├── firebase.js
+├── utils/
+│ └── crypto.js
+├── constants.js
+└── components/
+├── AddTask.jsx
+├── TaskList.jsx
+├── TaskItem.jsx
+├── Timer.jsx
+├── FocusMode.jsx
+├── DailyChart.jsx
+├── CategoryChart.jsx
+├── TotalStudy.jsx
+├── LevelDisplay.jsx
+├── ThemeToggle.jsx
+└── LoginScreen.jsx
+```
+
+---
+
+## 🛠️ Installation
+
+### 1️⃣ Clone the repository
+```sh
+git clone https://github.com/Aurasj/studytrack
 cd studytrack
-```
-
-✅ 2. Install dependencies
-```bash
 npm install
-```
-
-✅ 3. (Optional) Manual TailwindCSS installation
-```bash
-npm install -D tailwindcss postcss autoprefixer
-npx tailwindcss init -p
-```
-
-✅4. Start development server
-```bash
+src/firebase.js
 npm run dev
 ```
+---
 
-📁 Project Structure (simplified)
-```bash
-src/
- ├─ components/
- │   ├─ AddTask.jsx
- │   ├─ TaskList.jsx
- │   ├─ TaskItem.jsx
- │   ├─ Timer.jsx
- │   ├─ DailyChart.jsx
- │   ├─ TotalStudy.jsx
- │   └─ ThemeToggle.jsx
- ├─ App.jsx
- ├─ main.jsx
- └─ index.css
-```
+🔔 Permissions
+
+The app uses browser notifications, so make sure to allow them for reminders and pomodoro alerts.
+
+---
 
  📜 License
 ```bash
