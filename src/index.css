@@ -2,56 +2,114 @@
 @tailwind components;
 @tailwind utilities;
 
-/*  APP BG (light & dark)  */
-@layer utilities {
-  .app-bg {
-    @apply min-h-screen bg-gradient-to-br from-slate-50 to-slate-200 dark:from-slate-900 dark:to-slate-800;
+@layer base {
+  body {
+    @apply bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white transition-colors duration-300;
+    font-family: 'Inter', system-ui, sans-serif;
   }
 }
 
-/*  CARDS  */
 @layer components {
+  .btn {
+    @apply px-4 py-2 rounded-xl font-semibold transition-all duration-200 transform active:scale-95 shadow-md hover:shadow-lg;
+  }
+
+  .btn-primary {
+    @apply bg-gradient-to-r from-indigo-600 to-purple-600 text-white hover:from-indigo-700 hover:to-purple-700;
+  }
+
+  .btn-secondary {
+    @apply bg-slate-200 dark:bg-slate-700 text-slate-800 dark:text-white hover:bg-slate-300 dark:hover:bg-slate-600;
+  }
+
+  .btn-danger {
+    @apply bg-gradient-to-r from-red-500 to-pink-600 text-white hover:from-red-600 hover:to-pink-700;
+  }
+
+  .btn-success {
+    @apply bg-gradient-to-r from-emerald-500 to-teal-600 text-white hover:from-emerald-600 hover:to-teal-700;
+  }
+
+  .btn-warning {
+    @apply bg-gradient-to-r from-amber-400 to-orange-500 text-white hover:from-amber-500 hover:to-orange-600;
+  }
+
   .card {
-    @apply rounded-2xl p-5 bg-white/80 dark:bg-slate-800/70 backdrop-blur-md border border-white/40 dark:border-slate-700 shadow-lg;
+    @apply bg-white/80 dark:bg-slate-800/80 backdrop-blur-md border border-white/20 shadow-xl rounded-3xl p-6 transition-all;
   }
-  .card-muted {
-    @apply rounded-2xl p-4 bg-slate-100/80 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700;
+
+  .glass-panel {
+    @apply bg-white/10 backdrop-blur-lg border border-white/20 shadow-2xl rounded-3xl;
   }
-}
 
-/*  BUTTONS  */
-@layer components {
-  .btn { @apply px-4 py-2 rounded-xl font-semibold transition-all duration-150 active:scale-[0.98]; }
-  .btn-primary { @apply bg-indigo-600 hover:bg-indigo-700 text-white shadow; }
-  .btn-ghost { @apply bg-slate-200 hover:bg-slate-300 text-slate-900 dark:bg-slate-700 dark:hover:bg-slate-600 dark:text-white; }
-  .btn-success { @apply bg-emerald-600 hover:bg-emerald-700 text-white; }
-  .btn-warning { @apply bg-amber-500 hover:bg-amber-600 text-black; }
-  .btn-danger  { @apply bg-rose-600 hover:bg-rose-700 text-white; }
-}
-
-/*  TYPO / HEADINGS  */
-@layer utilities {
   .heading-gradient {
-    background: linear-gradient(90deg, #6366f1, #a78bfa);
-    
-    /* Standard property (pt compatibilitate completa) */
-    background-clip: text;
-
-    /* Webkit (obligatoriu pt Chrome/Safari) */
-    -webkit-background-clip: text;
-
-    /* Face textul transparent */
-    -webkit-text-fill-color: transparent;
-    color: transparent;
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 dark:from-indigo-400 dark:via-purple-400 dark:to-pink-400;
   }
 }
 
-@keyframes pulse-slow {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.65; }
+/* Animated Background */
+.app-bg {
+  background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+  background-size: 400% 400%;
+  animation: gradient 15s ease infinite;
+  min-height: 100vh;
 }
 
-.animate-pulse-slow {
-  animation: pulse-slow 3s ease-in-out infinite;
+.dark .app-bg {
+  background: linear-gradient(-45deg, #1a1a2e, #16213e, #0f3460, #533483);
+  background-size: 400% 400%;
+  animation: gradient 15s ease infinite;
 }
 
+@keyframes gradient {
+  0% {
+    background-position: 0% 50%;
+  }
+
+  50% {
+    background-position: 100% 50%;
+  }
+
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+@keyframes blob {
+  0% {
+    transform: translate(0px, 0px) scale(1);
+  }
+
+  33% {
+    transform: translate(30px, -50px) scale(1.1);
+  }
+
+  66% {
+    transform: translate(-20px, 20px) scale(0.9);
+  }
+
+  100% {
+    transform: translate(0px, 0px) scale(1);
+  }
+}
+
+.animate-blob {
+  animation: blob 7s infinite;
+}
+
+.animation-delay-2000 {
+  animation-delay: 2s;
+}
+
+.animation-delay-4000 {
+  animation-delay: 4s;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
