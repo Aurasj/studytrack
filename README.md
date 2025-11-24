@@ -58,8 +58,9 @@ It features task management, stopwatch & pomodoro timer, XP leveling, charts, cl
 - LocalStorage sync layer  
 
 ---
-```bash
+
 ## 📂 Project Structure
+```bash
 src/
 ├── App.jsx
 ├── main.jsx
