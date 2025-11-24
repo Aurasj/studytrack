@@ -92,7 +92,6 @@ src/
 git clone https://github.com/Aurasj/studytrack
 cd studytrack
 npm install
-src/firebase.js
 npm run dev
 ```
 ---
