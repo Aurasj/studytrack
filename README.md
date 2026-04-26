@@ -122,5 +122,5 @@ Developed by:
 Iancu Aurelian
 Ghimpu Dragoș
 Iliuță Andrei
-Grecea Mădălin
+Costia Georgian
 ```
