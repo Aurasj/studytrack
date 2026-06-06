@@ -116,11 +116,7 @@ Faculty of Electrical Engineering and Computer Science
 Specialization: Telecommunications Systems & Technologies (TST)
 ```
 
-👥 Authors
+👥 Author
 ```bash
-Developed by:
-Iancu Aurelian
-Ghimpu Dragoș
-Iliuță Andrei
-Costia Georgian
+Aurasj
 ```
